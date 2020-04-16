@@ -11,7 +11,21 @@
 %                                                    Valence, Tempo, DurationMs, TimeSignature]).
 
 
-% getArtistTracks(+ArtistName, -TrackIds, -TrackNames) 5 points
+
+iterateTrackIds([],L,L).
+iterateTrackIds([H|T],L2,[H1|T1]) :-
+  track(H,TrackName,_,_,_),
+  H1 = TrackName,
+  iterateTrackIds(T,L2,T1).
+  
+
+getArtistTracks(ArtistName, TrackIds, TrackNames) :-
+  findall(IDs,album(_,_,[ArtistName],IDs),ResultIDs), % Result is list of lists which contains all trackIds of corresponding artist.
+  append(ResultIDs,TrackIds),
+  %iterate TrackIds,found track names, append TrackNames list.
+  iterateTrackIds(TrackIds,[],TrackNames).
+  
+  
 
 % albumFeatures(+AlbumId, -AlbumFeatures) 5 points
 % artistFeatures(+ArtistName, -ArtistFeatures) 5 points
