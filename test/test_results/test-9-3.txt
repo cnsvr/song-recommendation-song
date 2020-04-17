@@ -1,0 +1,1 @@
+SimilarArtists = [Bola,Plaid,Pantha Du Prince,Justin Martin,Sascha Braemer,Massive Attack,Tycho,Caribou,Hudson Mohawke,Tim Berg,Stephan Bodzin,Ratatat,Hippie Sabotage,Alien Sex Fiend,Kieran Hebden,Dubstep Mafia,Take,The Brian Jonestown Massacre,Lenzman,Ken Ishii,Pinch,The Crystal Method,Anja Schneider,Ferry Corsten,Solomun,Autechre,Goldie,Kraftwerk,Mount Kimbie]

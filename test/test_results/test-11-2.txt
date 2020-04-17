@@ -1,0 +1,1 @@
+Genres = [conscious hip hop,hip hop,rap,west coast rap]

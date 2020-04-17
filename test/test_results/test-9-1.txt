@@ -1,0 +1,1 @@
+SimilarArtists = [Ekamatra,H.E.R.,Ebi,London Grammar,Andreya Triana,Lana Del Rey,Mohsen Namjoo,Tinashe,Guordan Banks,Datuk Ahmad Jais,Lucy Rose,Laleh,Martin Garrix,Adele,Seinabo Sey,Céline Dion,6LACK,Lykke Li,DeJ Loaf,Pascal Obispo,Justin Nozuka,Fatoumata Diawara,Chris James,İbrahim Tatlıses,Florence + The Machine,Sandy Lam,Sam Smith,Ismaël Lô,Cesária Evora]

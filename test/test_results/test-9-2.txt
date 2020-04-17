@@ -1,0 +1,1 @@
+SimilarArtists = [The Chainsmokers,Sia,Jennifer Lopez,Charli XCX,Kesha,Dua Lipa,Katy Perry,Example,Rudimental,P!nk,Los Amantes De Lola,Trey Songz,Blue,Robyn,Peter Bjorn and John,Red Hot Chili Peppers,Olly Murs,Craig David,Tasha Baxter,The Knocks,Logic,Mirei Toyama,Stromae,Pitbull,Jason Derulo,Zedd,Kierra Sheard,Anderson .Paak,Toploader]
