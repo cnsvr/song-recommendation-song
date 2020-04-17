@@ -108,11 +108,20 @@ trackDistance(TrackId1, TrackId2, Score) :-
   featuresDistance(Result1,Result2,S),
   Score is sqrt(S).
 
-albumDistance(+AlbumId1, +AlbumId2, -Score).
+albumDistance(AlbumId1, AlbumId2, Score) :-
+  albumFeatures(AlbumId1,Result1),
+  albumFeatures(AlbumId2,Result2),
+  featuresDistance(Result1,Result2,S),
+  Score is sqrt(S).
 
 
 
-artistDistance(+ArtistName1, +ArtistName2, -Score).
+artistDistance(ArtistName1, ArtistName2, Score) :-
+  artistFeatures(ArtistName1,Result1),
+  artistFeatures(ArtistName2,Result2),
+  featuresDistance(Result1,Result2,S),
+  Score is sqrt(S).
+
 
 findMostSimilarTracks(+TrackId, -SimilarIds, -SimilarNames).
 findMostSimilarAlbums(+AlbumId, -SimilarIds, -SimilarNames).
