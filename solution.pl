@@ -123,15 +123,100 @@ artistDistance(ArtistName1, ArtistName2, Score) :-
   Score is sqrt(S).
 
 
-findMostSimilarTracks(+TrackId, -SimilarIds, -SimilarNames).
-findMostSimilarAlbums(+AlbumId, -SimilarIds, -SimilarNames).
-findMostSimilarArtists(+ArtistName, -SimilarArtists).
+trackSimilarList(_,[],[]).
+trackSimilarList(TrackID,[H|T],[H1|T1]) :-
+  TrackId-TrackName = H,
+  trackDistance(TrackID,TrackId,Score),
+  H1 = Score-TrackId-TrackName,
+  trackSimilarList(TrackID,T,T1).
 
-filterExplicitTracks(+TrackList, -FilteredTracks).
+albumSimilarList(_,[],[]).
+albumSimilarList(AlbumID,[H|T],[H1|T1]) :-
+  AlbumId-AlbumName = H,
+  albumDistance(AlbumID,AlbumId,Score),
+  H1 = Score-AlbumId-AlbumName,
+  albumSimilarList(AlbumID,T,T1).
 
-getTrackGenre(+TrackId, -Genres).
+artistSimilarList(_,[],[]).
+artistSimilarList(ArtistName,[H|T],[H1|T1]) :-
+  artistDistance(ArtistName,H,Score),
+  H1 = Score-H,
+  artistSimilarList(ArtistName,T,T1).
+
+
+
+removeItemsFromList(_,0,[],[]).
+removeItemsFromList([H|T],S,[H1|T1],[H2|T2]) :-
+  Score-TrackID-TrackName = H,
+  (Score =:= 0 -> removeItemsFromList(T,S,[H1|T1],[H2|T2]);
+    H1 = TrackID,
+    H2 = TrackName,
+    Count is -(S,1),
+    removeItemsFromList(T,Count,T1,T2)
+  ).
+
+removeArtistFromList(_,0,[]).
+removeArtistFromList([H|T],S,[H1|T1]) :-
+  Score-ArtistName = H,
+  (Score =:= 0 -> removeArtistFromList(T,S,[H1|T1]);
+    H1 = ArtistName,
+    Count is -(S,1),
+    removeArtistFromList(T,Count,T1)
+  ).
+  
+
+findMostSimilarTracks(TrackId, SimilarIds, SimilarNames) :-
+  findall(TrackID-TrackName,track(TrackID,TrackName,_,_,_),Result),
+  trackSimilarList(TrackId,Result,PairList),
+  keysort(PairList,SortedPairList),
+  removeItemsFromList(SortedPairList,30,SimilarIds,SimilarNames).
+  
+
+
+findMostSimilarAlbums(AlbumId, SimilarIds, SimilarNames) :-
+  findall(AlbumID-AlbumName,album(AlbumID, AlbumName,_,_),Result),
+  albumSimilarList(AlbumId,Result,PairList),
+  keysort(PairList,SortedPairList),
+  removeItemsFromList(SortedPairList,30,SimilarIds,SimilarNames).
+  
+
+findMostSimilarArtists(ArtistName, SimilarArtists) :-
+  findall(Artists,artist(Artists, _, _),Result),
+  artistSimilarList(ArtistName,Result,PairList),
+  keysort(PairList,SortedPairList),
+  removeArtistFromList(SortedPairList,30,SimilarArtists).
+
+
+filterTracks([],L,L).
+filterTracks([H|T],L2,Result) :-
+  track(H, _, _, _,[E|_]),
+  (E =:= 1 -> filterTracks(T,L2,Result);
+    append(L2,[H],L3),
+    filterTracks(T,L3,Result)
+  ).
+
+filterExplicitTracks(TrackList, FilteredTracks) :-
+  filterTracks(TrackList,[],FilteredTracks).
+
+
+
+trackGenre([],L,L).
+trackGenre([H|T],L2,Result) :-
+  artist(H,Genres,_),
+  append(L2,Genres,L3),
+  trackGenre(T,L3,Result).
+
+getTrackGenre(TrackId, Genres) :-
+  track(TrackId,_,ArtistNames,_,_),
+  trackGenre(ArtistNames,[],Genres).
+  %append(Result,Genres).
+
+% sub_string("heavy pop",_,_,_,"pop").
+ 
 
 discoverPlaylist(+LikedGenres, +DislikedGenres, +Features, +FileName, -Playlist).
+
+  
 
 
 
