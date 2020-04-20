@@ -163,6 +163,8 @@ removeArtistFromList([H|T],S,[H1|T1]) :-
     Count is -(S,1),
     removeArtistFromList(T,Count,T1)
   ).
+
+
   
 
 findMostSimilarTracks(TrackId, SimilarIds, SimilarNames) :-
@@ -207,14 +209,112 @@ trackGenre([H|T],L2,Result) :-
   trackGenre(T,L3,Result).
 
 getTrackGenre(TrackId, Genres) :-
-  track(TrackId,_,ArtistNames,_,_),
-  trackGenre(ArtistNames,[],Genres).
+  (track(TrackId,_,ArtistNames,_,_) -> trackGenre(ArtistNames,[],Genres);
+    trackGenre([],[],Genres)
+  ).
+  %track(TrackId,_,ArtistNames,_,_),
+  %trackGenre(ArtistNames,[],Genres).
   %append(Result,Genres).
 
+%sub_string(+String,_,_,_,+substring).
 % sub_string("heavy pop",_,_,_,"pop").
  
 
-discoverPlaylist(+LikedGenres, +DislikedGenres, +Features, +FileName, -Playlist).
+%filterLikedGenres([],[],[]).
+%fiiterLikedGenres([H1|T1],[H2|T2],[H3|T3]) :- 
+  
+each_contains([],[]) --> false.
+each_contains([H1|T1],Item) :-
+  (sub_string(H1,_,_,_,Item) -> true;
+    each_contains(T1,Item)
+  ).
+
+
+%contains(+Genres-List,Liked/Dislike-List).
+
+
+contains([],[]) --> false.
+contains([H1|T1],[H2|T2]) :- 
+  (each_contains([H1|T1],H2) -> true;
+    contains([H1|T1], T2)
+    
+  ).
+  
+
+
+%LikedGenres
+%artist(ArtistName, Genres, AlbumIds).
+%filterLikedAndDislikeGenre(+LikedGenre,+DislikedGenres,+Tracks,+Features,-FilteredResult).
+filterLikedAndDislikeGenre(_,_,[],_,L,L).
+filterLikedAndDislikeGenre(Liked,Dislike,[H3|T3],Features,L2,Result) :-
+  ArtistName-Genres = H3,
+  %filter_features(FeaturesOfTrack,FilteredFeatures),
+  %getTrackGenre(TrackId,Genres),
+  
+  ((contains(Genres,Liked),not(contains(Genres,Dislike))) -> 
+  %featuresDistance(FilteredFeatures,Features,S),
+  %Score is sqrt(S),
+  %NewPair = Score-TrackId-TrackName-ArtistNames,
+  getArtistTracks(ArtistName,TrackIds,_),
+  pairList(TrackIds,Features,ArtistName,[],R),
+  append(L2,R,L3),
+  filterLikedAndDislikeGenre(Liked,Dislike,T3,Features,L3,Result);
+    filterLikedAndDislikeGenre(Liked,Dislike,T3,Features,L2,Result)
+  ).
+
+%pairList(TrackIds,TrackNames,ArtistName,Result).
+pairList([],_,_,L,L).
+pairList([H1|T1],FeaturesOfTrack,ArtistName,L2,Result) :-
+  track(H1,TrackName,_,_,Features),
+  filter_features(Features,FilteredFeatures),
+  featuresDistance(FilteredFeatures,FeaturesOfTrack,S),
+  Score is sqrt(S),
+  NewPair = Score-H1-TrackName-ArtistName,
+  append(L2,[NewPair],L3),
+  pairList(T1,FeaturesOfTrack,ArtistName,L3,Result).
+
+
+
+filterPlayList(_,0,[]).
+filterPlayList([H|T],S,[H|T1]) :-
+  %Score-TrackId-TrackName-ArtistNames = H,
+  %H1 = H,
+  Count is -(S,1),
+  filterPlayList(T,Count,T1).
+
+
+iteratePlaylist([],[],[],[],[]).
+iteratePlaylist([H1|T1],[H2|T2],[H3|T3],[H4|T4],[H5|T5]) :-
+  T-N-A-D = H1,
+  %append(TrackId,[T],NewTracks),
+  %append(TrackName,[N],NewTrackName),
+  %append(ArtistNames,[A],NewArtistName),
+  %append(Distance,[D],NewDistance),
+  H2 = T, H3 = N, H4 = A, H5 = [D],
+  iteratePlaylist(T1,T2,T3,T4,T5).
+
+
+discoverPlaylist(LikedGenres,DislikedGenres,Features,FileName,Playlist) :-
+  %findall(ArtistName-Genres,artist(ArtistName,Genres,_),Result),
+  %findall(FeaturesOfTrack-TrackId-TrackName-ArtistNames,track(TrackId,TrackName,ArtistNames,_,FeaturesOfTrack),Result),
+  findall(ArtistName-Genres,artist(ArtistName,Genres,_),Result),
+  filterLikedAndDislikeGenre(LikedGenres,DislikedGenres,Result,Features,[],PairList),
+  keysort(PairList,SortedPairList),
+  filterPlayList(SortedPairList,30,Playlist),
+  iteratePlaylist(Playlist,Distance,TrackIds,TrackNames,ArtistName),
+  open(FileName,write,Stream),
+  writeln(Stream,TrackIds),
+  writeln(Stream,TrackNames),
+  writeln(Stream,ArtistName),
+  writeln(Stream,Distance),
+  close(Stream).
+  
+  
+  
+
+
+
+
 
   
 
