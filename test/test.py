@@ -12,7 +12,7 @@ def write_to_file(filename, variable):
 def convert(tests, path):
     if not os.path.exists(path):
         os.mkdir(path)
-    str = "swipl -g '[load].' -g '[solution].' "
+    str = "swipl -g '[load].' -g '[solution].' -g 'set_prolog_flag(stack_limit, 2_147_483_648).' "
     for expr, var, name in tests:
         str = str + "-g '" + expr + ', ' + write_to_file(os.path.join(path, name), var) + ".' "
         # print("-g '" + expr + ', ' + write_to_file(os.path.join(path, name), var) + ".' ")
