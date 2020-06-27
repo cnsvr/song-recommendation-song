@@ -8,7 +8,7 @@ In this project, you will implement a song recommendation system in Prolog. This
 
 ### 2 Knowledge Base
 
-You have three main files as your knowledge base: artists.pl, albums.pl, tracks.pl. These are collected with the help of (Spotify API)[https://developer.spotify.com]. There are three different types of predicates defined as follows:
+You have three main files as your knowledge base: artists.pl, albums.pl, tracks.pl. These are collected with the help of [Spotify API](https://developer.spotify.com). There are three different types of predicates defined as follows:
   * **artist(ArtistName, ArtistGenres, AlbumIds).**
     * **ArtistName**: Name of the artist. (string)
     * **ArtistGenres**: List of genres the artist associated with. (list of strings)
